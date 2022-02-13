@@ -5,7 +5,6 @@ from flask import Flask, send_from_directory
 from flask import request
 
 gerarArquivo = Flask("name")
-arquivos = []
 
 
 # pip install python-pptx
