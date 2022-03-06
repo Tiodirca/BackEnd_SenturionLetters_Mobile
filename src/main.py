@@ -49,7 +49,9 @@ def gerar_slides():
 def obterIP():
     # metodo para obter ip da maquina
     try:
+        # obtendo ip
         ip = socket.gethostbyname(socket.gethostname())
+        print(ip)
         # salvando o arquivo
         return ip
     except:
