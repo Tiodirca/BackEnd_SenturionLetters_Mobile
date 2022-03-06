@@ -1,3 +1,5 @@
+import socket
+
 from pptx import Presentation
 import os
 from flask import Flask, send_from_directory
@@ -44,6 +46,16 @@ def gerar_slides():
         return "<p>erro</p>"
 
 
+def obterIP():
+    # metodo para obter ip da maquina
+    try:
+        ip = socket.gethostbyname(socket.gethostname())
+        # salvando o arquivo
+        return ip
+    except:
+        return "<p>erro</p>"
+
+
 @gerarArquivo.route("/baixarArquivo/<nome_arquivo>", methods=['GET'])
 def baixar_arquivo(nome_arquivo):
     try:
@@ -75,4 +87,4 @@ def excluir_arquivo():
 
 
 if __name__ == '__main__':
-    gerarArquivo.run(port=35408, host="192.168.1.5", debug=True)
+    gerarArquivo.run(port=35408, host=obterIP(), debug=True)
