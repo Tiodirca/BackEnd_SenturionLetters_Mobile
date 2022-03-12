@@ -98,4 +98,4 @@ def excluir_arquivo():
 
 
 if __name__ == '__main__':
-    gerarArquivo.run(port=35408, host=obterIP(), debug=True)
+    gerarArquivo.run(host=obterIP(), debug=True)
