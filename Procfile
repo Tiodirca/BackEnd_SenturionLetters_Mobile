@@ -1,1 +1,1 @@
-web: gunicorn main:name
+web: gunicorn gerarArquivo:name
