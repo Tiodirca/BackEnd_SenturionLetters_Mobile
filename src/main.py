@@ -10,7 +10,16 @@ gerarArquivo = Flask("name")
 
 
 # pip install python-pptx
-@gerarArquivo.route("/", methods=['POST'])
+
+
+@gerarArquivo.route("/")
+def gerar():
+    try:
+        return "<p>sucesso</p>"
+    except:
+        return "<p>erro</p>"
+
+@gerarArquivo.route("/gerar", methods=['POST'])
 def gerar_slides():
     # metodo para gerar e salvar o slides com a letra
     # recebendo os dados via POST
