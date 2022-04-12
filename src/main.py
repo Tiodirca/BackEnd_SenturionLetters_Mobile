@@ -15,14 +15,25 @@ gerarArquivo = Flask("name")
 @gerarArquivo.route("/")
 def gerar():
     try:
-        return "<p>sucesso AO ENTrar</p>"
+        return "<p>sucesso ao entrar</p>"
     except:
         return "<p>erro</p>"
+
+
+def adicionarSlide(prs, titulo, estrofe):
+    blank_slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(blank_slide_layout)
+    title = slide.shapes.title
+    subtitulo = slide.placeholders[1]
+    title.text = titulo
+    subtitulo.text = estrofe.replace("<br>", '\n')
+
 
 @gerarArquivo.route("/gerar", methods=['POST'])
 def gerar_slides():
     # metodo para gerar e salvar o slides com a letra
     # recebendo os dados via POST
+    global estrofe_slide
     textos = request.form.get('textos')
     titulo = request.form.get('titulo')
     modelo = request.form.get('modelo')
@@ -37,17 +48,36 @@ def gerar_slides():
         else:
             caminho = "modelos_slides/modelo_geracao_fire.pptx"
             prs = Presentation(caminho)
-        blank_slide_layout = prs.slide_layouts[0]
         for estrofe in textoDividido:  # pegando cada item da lista
-            dividir_estrofe = estrofe.split("<br>")
-            # divindo cada item em uma nova lista
-            for verso in dividir_estrofe:  # pegando cada item da nova lista gerada
-                # adicionando um slide para cada item da lista
-                slide = prs.slides.add_slide(blank_slide_layout)
-                title = slide.shapes.title
-                subtitulo = slide.placeholders[1]
-                title.text = titulo
-                subtitulo.text = verso
+            # divindo a lista na quantidade de vezes passada como parametro para o split
+            dividir_estrofe = str(estrofe).split("<br>", 2)
+            # verificando se a variavel atende quais situacoes
+            if len(dividir_estrofe) == 1:
+                estrofe_slide = dividir_estrofe[0]
+            elif len(dividir_estrofe) >= 2:
+                # definindo que a variavel vai receber o valor da variavel
+                # pegando o primeiro index e o segundo index
+                estrofe_slide = dividir_estrofe[0] + "\n" + dividir_estrofe[1]
+            # adicionando um slide contendo os seguintes conteudos
+            adicionarSlide(prs, titulo, estrofe_slide)
+            # verificando se a variavel contem mais de dois index
+            if len(dividir_estrofe) > 2:
+                # divindo a lista na quantidade de vezes passada como
+                # parametro para o split e atribuindo a uma variavel
+                dividir_estrofe_secundaria = str(dividir_estrofe[2]).split("<br>", 2)
+                # verificando se a variavel atende quais situacoes
+                if len(dividir_estrofe_secundaria) == 1:
+                    estrofe_slide_secundaria = dividir_estrofe_secundaria[0]
+                    adicionarSlide(prs, titulo, estrofe_slide_secundaria)
+
+                elif len(dividir_estrofe_secundaria) >= 2:
+                    # definindo que a variavel vai receber o valor da variavel
+                    # pegando o primeiro index e o segundo index
+                    estrofe_slide_secundaria = dividir_estrofe_secundaria[0] + "\n" + dividir_estrofe_secundaria[1]
+                    adicionarSlide(prs, titulo, estrofe_slide_secundaria)
+                    # verificando se a variavel atende a seguinte situacao
+                    if len(dividir_estrofe_secundaria) >= 3:
+                        adicionarSlide(prs, titulo, dividir_estrofe_secundaria[2])
 
         prs.save(titulo + ".pptx")  # salvando o arquivo
         return "<p>sucesso</p>"
